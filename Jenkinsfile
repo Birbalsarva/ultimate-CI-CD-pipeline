@@ -10,7 +10,7 @@ pipeline {
     stage('Checkout') {
       steps {
         sh 'echo passed'
-        //git branch: 'main', url: ' url'
+        //git branch: 'master', url: 'https://github.com/Birbalsarva/Jenkins-triggers.git'
       }
     }
     stage('Build and Test') {
@@ -22,7 +22,7 @@ pipeline {
     }
     stage('Static Code Analysis') {
       environment {
-        SONAR_URL = "http://34.201.116.83:9000"
+        SONAR_URL = "http://92.168.49.1:9000"
       }
       steps {
         withCredentials([string(credentialsId: 'sonarqube', variable: 'SONAR_AUTH_TOKEN')]) {

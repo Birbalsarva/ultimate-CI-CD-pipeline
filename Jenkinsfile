@@ -10,7 +10,7 @@ pipeline {
     stage('Checkout') {
       steps {
         sh 'echo passed'
-        //git branch: 'master', url: 'https://github.com/Birbalsarva/Jenkins-triggers.git'
+          git branch: 'master', url: 'https://github.com/Birbalsarva/Jenkins-triggers.git'
       }
     }
     stage('Build and Test') {
@@ -33,7 +33,7 @@ pipeline {
     stage('Build and Push Docker Image') {
       environment {
         DOCKER_IMAGE = "birbalsarva/ultimate-cicd:${BUILD_NUMBER}"
-        // DOCKERFILE_LOCATION = "Jenkins-triggers/Dockerfile"
+          DOCKERFILE_LOCATION = "Jenkins-triggers/Dockerfile"
         REGISTRY_CREDENTIALS = credentials('docker-cred')
       }
       steps {

@@ -10,7 +10,7 @@ pipeline {
     stage('Checkout') {
       steps {
         sh 'echo passed'
-          git branch: 'master', url: 'https://github.com/Birbalsarva/Jenkins-triggers.git'
+          git branch: 'master', url: 'https://github.com/Birbalsarva/ultimate-CI-CD-pipeline.git'
       }
     }
     stage('Build and Test') {
@@ -33,7 +33,7 @@ pipeline {
     stage('Build and Push Docker Image') {
       environment {
         DOCKER_IMAGE = "birbalsarva/ultimate-cicd:${BUILD_NUMBER}"
-          DOCKERFILE_LOCATION = "Jenkins-triggers/Dockerfile"
+          DOCKERFILE_LOCATION = "ultimate-CI-CD-pipeline/Dockerfile"
         REGISTRY_CREDENTIALS = credentials('docker-cred')
       }
       steps {
@@ -48,7 +48,7 @@ pipeline {
     }
    stage('Update Deployment File') {
         environment {
-            GIT_REPO_NAME = "Jenkins-triggers"
+            GIT_REPO_NAME = "ultimate-CI-CD-pipeline"
             GIT_USER_NAME = "Birbalsarva"
         }
         steps {
@@ -62,10 +62,10 @@ pipeline {
                     git commit -m "Update deployment image to version ${BUILD_NUMBER}"
                     git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
                 '''
-            }
-        }
-    }
-  }
+             }
+         }
+      }
+   }
 }
 
 

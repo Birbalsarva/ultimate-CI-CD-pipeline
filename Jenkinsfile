@@ -10,7 +10,7 @@ pipeline {
     stage('Checkout') {
       steps {
         sh 'echo passed'
-          git branch: 'master', url: 'https://github.com/Birbalsarva/ultimate-CI-CD-pipeline.git'
+        git branch: 'master', url: 'https://github.com/Birbalsarva/ultimate-CI-CD-pipeline.git'
       }
     }
     stage('Build and Test') {
@@ -33,40 +33,39 @@ pipeline {
     stage('Build and Push Docker Image') {
       environment {
         DOCKER_IMAGE = "birbalsarva/ultimate-cicd:${BUILD_NUMBER}"
-          DOCKERFILE_LOCATION = "ultimate-CI-CD-pipeline/Dockerfile"
+        DOCKERFILE_LOCATION = "ultimate-CI-CD-pipeline/Dockerfile"
         REGISTRY_CREDENTIALS = credentials('docker-cred')
       }
       steps {
         script {
-            sh 'docker build -t ${DOCKER_IMAGE} .'
-            def dockerImage = docker.image("${DOCKER_IMAGE}")
-            docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
-                dockerImage.push()
-            }
+          sh 'docker build -t ${DOCKER_IMAGE} .'
+          def dockerImage = docker.image("${DOCKER_IMAGE}")
+          docker.withRegistry('https://index.docker.io/v1/', "docker-cred") {
+            dockerImage.push()
+          }
         }
       }
     }
-   stage('Update Deployment File') {
-        environment {
-            GIT_REPO_NAME = "ultimate-CI-CD-pipeline"
-            GIT_USER_NAME = "Birbalsarva"
-        }
-        steps {
-            withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
-                sh '''
-                    git config user.email "birbalsarva24@gmail.com"
-                    git config user.name "Birbal S Naik"
-                    BUILD_NUMBER=${BUILD_NUMBER}
-                    sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" deployment.yml
-                    git add deployment.yml
-                    git commit -m "Update deployment image to version ${BUILD_NUMBER}"
-                    git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
-                '''
-             }
-         }
+    stage('Update Deployment File') {
+      environment {
+        GIT_REPO_NAME = "ultimate-CI-CD-pipeline"
+        GIT_USER_NAME = "Birbalsarva"
       }
-   }
+      steps {
+        withCredentials([string(credentialsId: 'github', variable: 'GITHUB_TOKEN')]) {
+          sh '''
+            git config user.email "birbalsarva24@gmail.com"
+            git config user.name "Birbal S Naik"
+            BUILD_NUMBER=${BUILD_NUMBER}
+            sed -i "s/replaceImageTag/${BUILD_NUMBER}/g" deployment.yml
+            git add deployment.yml
+            git commit -m "Update deployment image to version ${BUILD_NUMBER}"
+            git push https://${GITHUB_TOKEN}@github.com/${GIT_USER_NAME}/${GIT_REPO_NAME} HEAD:main
+          '''
+        }
+      }
+    }
+  }
 }
-
 
 
